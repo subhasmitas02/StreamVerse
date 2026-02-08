@@ -1,0 +1,17 @@
+/*
+ * Copyright (c) 2026 Subhasmita Sahu. All Rights Reserved.
+ *
+ * Project: STREAMING SERVICE APP
+ * File: TopicMessageRepository.java
+ *
+ */
+
+package com.subhasmita.streamverse.moderation.repositories;
+
+import com.subhasmita.streamverse.moderation.entity.TopicMessage;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.UUID;
+
+public interface TopicMessageRepository extends JpaRepository<TopicMessage, UUID> {
+}
