@@ -1,0 +1,31 @@
+package com.subhasmita.streamverse.subscription.kafka;
+
+import com.subhasmita.streamverse.subscription.entity.UserSubscriptions;
+import com.subhasmita.streamverse.subscription.service.UserSubscriptionService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Service;
+
+import javax.naming.OperationNotSupportedException;
+
+import static com.subhasmita.streamverse.subscription.kafka.KafkaTopics.*;
+
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class UserSubscriptionConsumer {
+
+    private final UserSubscriptionService userSubscriptionService;
+
+    @KafkaListener(topics = UNSUBSCRIBE_USER_TOPIC, groupId = "${spring.kafka.consumer.group-id}")
+    private void consumeUserSubscription(UserSubscriptions userSubscriptions) {
+        log.info("Kafka consumer consumeUserSubscription: {}", userSubscriptions);
+        try {
+            userSubscriptionService.unsubscribeUser(userSubscriptions);
+        } catch (OperationNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: subscription-service
+  config:
+    import: optional:configserver:http://localhost:8880
+  datasource:
+    url: jdbc:postgresql://localhost:5432/subscriptions
+    username: root
+    driver-class-name: org.postgresql.Driver
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    baseline-on-migrate: true
+    baseline-description: "init"
+    baseline-version: 0
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    enabled: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      value-serializer: org.apache.kafka.common.serialization.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      value-deserializer: org.apache.kafka.common.serialization.JsonDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: subscription-group
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always

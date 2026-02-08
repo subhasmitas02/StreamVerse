@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2026 Subhasmita Sahu. All Rights Reserved.
+ *
+ * Project: StreamVerse
+ * File: JwtConfig.java
+ *
+ */
+
+package com.subhasmita.streamverse.media.config;
+
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.RSAKey;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.text.ParseException;
+
+@Slf4j
+@Configuration
+public class JwtConfig {
+
+    @Bean
+    public JWSVerifier jwsVerifier(WebClient webClient) throws ParseException, JOSEException {
+
+        String publicKey = webClient.get()
+                .uri("http://user-service/api/v1/users/jwt/public")
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        assert publicKey != null;
+        RSAKey publicJWK = RSAKey.parse(publicKey);
+
+        return new RSASSAVerifier(publicJWK);
+    }
+}
